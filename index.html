@@ -1,9 +1,242 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Mu Site!</title>
-    </head>
-    <body>
-        <h1>This is my GitHub Pages website!</h1>
-    </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bonnet | Indie Game Experiments</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1f2e;
+      --bg-glow: #123f5e;
+      --accent: #f2be5c;
+      --muted: #9cb7c8;
+      --panel: rgba(13, 25, 38, 0.72);
+      --card: rgba(255, 255, 255, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 20%, rgba(242, 190, 92, 0.18), transparent 32%),
+                  radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.08), transparent 36%),
+                  linear-gradient(135deg, var(--bg) 0%, var(--bg-glow) 50%, #0b1825 100%);
+      color: #e5eef5;
+      font-family: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+      padding: 32px 18px 48px;
+      display: flex;
+      justify-content: center;
+    }
+
+    main {
+      width: min(1080px, 100%);
+      background: var(--panel);
+      border: 1px solid rgba(242, 190, 92, 0.18);
+      border-radius: 20px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+    }
+
+    .logo-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(242, 190, 92, 0.6), rgba(242, 190, 92, 0.2));
+      display: grid;
+      place-items: center;
+      color: #0f1f2e;
+      font-weight: 700;
+      box-shadow: 0 8px 26px rgba(242, 190, 92, 0.25);
+    }
+
+    .pill {
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      margin: 4px 0 10px;
+      letter-spacing: -0.5px;
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 780px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 20% 20%, rgba(242, 190, 92, 0.08), transparent 40%);
+    }
+
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.2px;
+      margin-bottom: 6px;
+    }
+
+    .label::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.8;
+    }
+
+    .card h2 {
+      margin: 4px 0 8px;
+      font-size: 22px;
+      letter-spacing: -0.3px;
+    }
+
+    .actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--accent), #f7d48e);
+      color: #0f1f2e;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(242, 190, 92, 0.3);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(242, 190, 92, 0.28);
+    }
+
+    .secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e5eef5;
+      box-shadow: none;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    footer {
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 640px) {
+      main {
+        padding: 22px;
+      }
+
+      header {
+        gap: 8px;
+      }
+
+      .actions {
+        width: 100%;
+      }
+
+      .button, .secondary {
+        flex: 1;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="logo">
+        <div class="logo-mark">B</div>
+        <div>
+          <div class="pill">Bonnet | Indie Dev</div>
+          <h1>Strange prototypes, cozy vibes.</h1>
+        </div>
+      </div>
+      <div class="pill">Made for the web</div>
+    </header>
+
+    <p>I tinker with small games, seasonal jams, and other cozy experiments. Everything here runs right in the browser—no installs, just vibes. Check out the latest build below.</p>
+
+    <section class="grid">
+      <article class="card">
+        <div class="label">Featured</div>
+        <h2>Gingerbread Gauntlet</h2>
+        <p>Defend Santa’s workshop from sugar-fueled gingerbread goons. Place candy cane cannons, manage cookies, and hold the line.</p>
+        <div class="actions">
+          <a class="button" href="christmas-defense/" target="_blank" rel="noopener noreferrer">Play in new tab</a>
+          <a class="secondary button" href="https://github.com/Bonnet1/Bonnet1.github.io/tree/main/christmas-defense" target="_blank" rel="noopener noreferrer">Source</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="label">About</div>
+        <h2>Who is Bonnet?</h2>
+        <p>I’m a solo dev focused on accessible, joyful web games. This site will collect my prototypes, postmortems, and dev logs as they ship.</p>
+        <div class="actions">
+          <a class="secondary button" href="mailto:christophermannion95@gmail.com">Say hello</a>
+        </div>
+      </article>
+    </section>
+
+    <footer>Hosted on GitHub Pages. More experiments coming soon.</footer>
+  </main>
+</body>
 </html>
