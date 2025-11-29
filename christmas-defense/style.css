@@ -52,6 +52,36 @@ h1 {
   font-size: 14px;
 }
 
+#tower-legend {
+  font-size: 13px;
+  color: #184624;
+  margin-bottom: 6px;
+}
+
+#tower-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.tower-button {
+  font-family: "Courier New", monospace;
+  background: #cde8d3;
+  color: #0b2411;
+  border: 2px solid #a3c1a0;
+  padding: 6px 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #0b2411;
+}
+
+.tower-button.active {
+  background: #f7fff3;
+  border-color: #d24b4b;
+  box-shadow: 0 2px 0 #5a0f0f;
+}
+
 canvas {
   border: 3px solid #dce9d4;
   background: #b8d7c0;

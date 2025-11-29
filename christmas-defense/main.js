@@ -2,9 +2,28 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const statsEl = document.getElementById('stats');
 const instructionsEl = document.getElementById('instructions');
+const cannonButton = document.getElementById('cannon-button');
+const peppermintButton = document.getElementById('peppermint-button');
+const mortarButton = document.getElementById('mortar-button');
 
 const tileSize = 40;
 const pathWidth = 80;
+const towerCosts = {
+  cannon: 50,
+  peppermint: 60,
+  mortar: 80
+};
+let currentTowerType = 'cannon';
+const spriteSheet = new Image();
+spriteSheet.src = 'sprites.png';
+let spriteReady = false;
+let spriteW = 0;
+let spriteH = 0;
+spriteSheet.onload = () => {
+  spriteW = spriteSheet.width / 3;
+  spriteH = spriteSheet.height / 2;
+  spriteReady = spriteW > 0 && spriteH > 0;
+};
 
 const state = {
   pathPoints: [
@@ -23,7 +42,7 @@ const state = {
   cookies: 100,
   lives: 20,
   waveNumber: 1,
-  enemiesToSpawn: 5,
+  pendingSpawns: [],
   spawnTimer: 2,
   spawnInterval: 1.5,
   maxWaves: 5,
@@ -31,15 +50,42 @@ const state = {
   win: false
 };
 
+function setTowerSelection(type) {
+  currentTowerType = type;
+  cannonButton.classList.toggle('active', type === 'cannon');
+  peppermintButton.classList.toggle('active', type === 'peppermint');
+  mortarButton.classList.toggle('active', type === 'mortar');
+}
+
+cannonButton.addEventListener('click', () => setTowerSelection('cannon'));
+peppermintButton.addEventListener('click', () => setTowerSelection('peppermint'));
+mortarButton.addEventListener('click', () => setTowerSelection('mortar'));
+
 class Enemy {
-  constructor() {
+  constructor(type = 'gingerbread') {
+    this.type = type;
     const start = state.pathPoints[0];
     this.x = start.x;
     this.y = start.y;
     this.pathIndex = 0;
-    this.speed = 45 + Math.random() * 15;
-    this.maxHp = 10 + (state.waveNumber - 1) * 2;
+    this.baseSpeed =
+      type === 'tank'
+        ? 40 + Math.random() * 6
+        : type === 'darter'
+        ? 120 + Math.random() * 30
+        : 45 + Math.random() * 15;
+    this.speedMultiplier = 1;
+    this.slowTimer = 0;
+    const baseHp = 10 + (state.waveNumber - 1) * 2;
+    this.maxHp =
+      type === 'tank'
+        ? baseHp * 5
+        : type === 'darter'
+        ? Math.max(4, Math.round(baseHp * 0.35))
+        : baseHp;
     this.hp = this.maxHp;
+    this.reward = type === 'tank' ? 20 : type === 'darter' ? 3 : 5;
+    this.regenRate = type === 'tank' ? 1 : 0;
     this.reachedEnd = false;
     this.dead = false;
   }
@@ -48,12 +94,18 @@ class Enemy {
     this.hp -= amount;
     if (this.hp <= 0) {
       this.dead = true;
-      state.cookies += 5;
+      state.cookies += this.reward;
     }
   }
 
   update(dt) {
     if (this.dead || this.reachedEnd) return;
+    if (this.slowTimer > 0) {
+      this.slowTimer -= dt;
+      if (this.slowTimer <= 0) {
+        this.speedMultiplier = 1;
+      }
+    }
     const nextIndex = this.pathIndex + 1;
     if (nextIndex >= state.pathPoints.length) {
       this.reachedEnd = true;
@@ -72,29 +124,66 @@ class Enemy {
       this.pathIndex++;
       return;
     }
-    const step = Math.min(dist, this.speed * dt);
+    const currentSpeed = this.baseSpeed * this.speedMultiplier;
+    const step = Math.min(dist, currentSpeed * dt);
     this.x += (dx / dist) * step;
     this.y += (dy / dist) * step;
 
     if (step >= dist - 0.5) {
       this.pathIndex++;
     }
+    if (this.regenRate > 0 && this.hp < this.maxHp) {
+      this.hp = Math.min(this.maxHp, this.hp + this.regenRate * dt);
+    }
   }
 
   draw() {
-    const bodySize = 16;
-    ctx.fillStyle = '#b0753d';
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, bodySize * 0.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillRect(this.x - bodySize * 0.45, this.y - bodySize * 0.2, bodySize * 0.9, bodySize * 0.8);
-    ctx.fillStyle = '#542e15';
-    ctx.fillRect(this.x - 3, this.y - 4, 2, 2);
-    ctx.fillRect(this.x + 1, this.y - 4, 2, 2);
+    const bodySize = this.type === 'tank' ? 24 : this.type === 'darter' ? 12 : 16;
+    const spriteIndex = this.type === 'tank' ? 1 : this.type === 'darter' ? 2 : 0;
+    const desiredH = this.type === 'tank' ? 44 : this.type === 'darter' ? 24 : 32;
+    if (!drawSprite(spriteIndex, this.x, this.y, desiredH)) {
+      if (this.type === 'tank') {
+        ctx.fillStyle = '#f7fbff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, bodySize * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#e1eef7';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y - 10, bodySize * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#355c7d';
+        ctx.fillRect(this.x - 3, this.y - 12, 2, 2);
+        ctx.fillRect(this.x + 1, this.y - 12, 2, 2);
+        ctx.fillStyle = '#d84343';
+        ctx.fillRect(this.x - 2, this.y - bodySize * 0.45, 12, 4);
+      } else if (this.type === 'darter') {
+        ctx.fillStyle = '#f4f9ff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, bodySize * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#d22';
+        ctx.fillRect(this.x - bodySize * 0.4, this.y - bodySize * 0.2, bodySize * 0.8, bodySize * 0.4);
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(this.x - bodySize * 0.35, this.y - bodySize * 0.15, bodySize * 0.7, bodySize * 0.1);
+        ctx.fillStyle = '#d22';
+        ctx.fillRect(this.x + bodySize * 0.1, this.y - bodySize * 0.6, 8, 3);
+        ctx.fillStyle = '#355c7d';
+        ctx.fillRect(this.x - 2, this.y - 3, 2, 2);
+        ctx.fillRect(this.x + 2, this.y - 3, 2, 2);
+      } else {
+        ctx.fillStyle = '#b0753d';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, bodySize * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(this.x - bodySize * 0.45, this.y - bodySize * 0.2, bodySize * 0.9, bodySize * 0.8);
+        ctx.fillStyle = '#542e15';
+        ctx.fillRect(this.x - 3, this.y - 4, 2, 2);
+        ctx.fillRect(this.x + 1, this.y - 4, 2, 2);
+      }
+    }
 
-    // HP bar
-    const barWidth = 20;
-    const barHeight = 4;
+    const barWidth = this.type === 'tank' ? 30 : this.type === 'darter' ? 18 : 20;
+    const barHeight = 4 + (this.type === 'tank' ? 1 : 0);
     const hpRatio = Math.max(this.hp, 0) / this.maxHp;
     ctx.fillStyle = '#411';
     ctx.fillRect(this.x - barWidth / 2, this.y - bodySize * 0.8, barWidth, barHeight);
@@ -107,6 +196,7 @@ class Tower {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+    this.type = 'cannon';
     this.range = 110;
     this.fireRate = 1.1;
     this.cooldown = 0;
@@ -125,6 +215,7 @@ class Tower {
   }
 
   draw() {
+    if (drawSprite(3, this.x, this.y, 34)) return;
     const size = 28;
     ctx.fillStyle = '#fff';
     ctx.fillRect(this.x - size / 2, this.y - size / 2, size, size);
@@ -143,6 +234,105 @@ class Tower {
     ctx.restore();
     ctx.fillStyle = '#222';
     ctx.fillRect(this.x - 5, this.y - size / 2 - 6, 10, 8);
+  }
+}
+
+class PeppermintTower {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.type = 'peppermint';
+    this.range = 130;
+    this.slowAmount = 0.5;
+    this.slowDuration = 1;
+    this.slowedTargets = [];
+  }
+
+  update(dt) {
+    if (state.gameOver) return;
+    this.slowedTargets = [];
+    for (const enemy of state.enemies) {
+      if (enemy.dead || enemy.reachedEnd) continue;
+      if (distance(enemy.x, enemy.y, this.x, this.y) <= this.range) {
+        enemy.speedMultiplier = this.slowAmount;
+        enemy.slowTimer = this.slowDuration;
+        this.slowedTargets.push(enemy);
+      }
+    }
+  }
+
+  draw() {
+    if (drawSprite(4, this.x, this.y, 34)) return;
+    const width = 14;
+    const height = 36;
+    ctx.fillStyle = '#f8fffb';
+    ctx.fillRect(this.x - width / 2, this.y - height / 2, width, height);
+    ctx.strokeStyle = '#d22';
+    ctx.lineWidth = 4;
+    for (let offset = -height / 2 + 2; offset < height / 2; offset += 8) {
+      ctx.beginPath();
+      ctx.moveTo(this.x - width / 2, this.y + offset);
+      ctx.lineTo(this.x + width / 2, this.y + offset + 6);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#1a2e1f';
+    ctx.fillRect(this.x - width / 4, this.y + height / 2 - 6, width / 2, 8);
+
+    // Frosty beams to slowed enemies
+    ctx.strokeStyle = 'rgba(156, 226, 255, 0.7)';
+    ctx.lineWidth = 2;
+    for (const target of this.slowedTargets) {
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y - height / 2);
+      ctx.lineTo(target.x, target.y);
+      ctx.stroke();
+    }
+  }
+}
+
+class CocoaMortar {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.type = 'mortar';
+    this.range = 140;
+    this.fireRate = 0.5;
+    this.cooldown = 0;
+    this.splashRadius = 50;
+    this.damage = 6;
+    this.projectileSpeed = 170;
+  }
+
+  update(dt) {
+    this.cooldown -= dt;
+    if (this.cooldown > 0 || state.gameOver) return;
+    const target = state.enemies.find(
+      (e) => !e.dead && !e.reachedEnd && distance(e.x, e.y, this.x, this.y) <= this.range
+    );
+    if (target) {
+      state.bullets.push(
+        new CocoaShot(this.x, this.y, target.x, target.y, this.damage, this.splashRadius, this.projectileSpeed)
+      );
+      this.cooldown = 1 / this.fireRate;
+    }
+  }
+
+  draw() {
+    if (drawSprite(5, this.x, this.y, 34)) return;
+    const width = 26;
+    const height = 18;
+    ctx.fillStyle = '#5b3524';
+    ctx.fillRect(this.x - width / 2, this.y - height / 2, width, height);
+    ctx.fillStyle = '#2d1b13';
+    ctx.fillRect(this.x - width / 2, this.y - height / 2 - 6, width, 6);
+    ctx.fillStyle = '#b56b39';
+    ctx.fillRect(this.x - width / 2 + 4, this.y - height / 2 + 2, width - 8, height / 2);
+    ctx.strokeStyle = '#d22';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(this.x - width / 2, this.y + height / 2);
+    ctx.lineTo(this.x + width / 2, this.y + height / 2);
+    ctx.stroke();
   }
 }
 
@@ -183,8 +373,87 @@ class Bullet {
   }
 }
 
+class CocoaShot {
+  constructor(x, y, targetX, targetY, damage, radius, speed) {
+    this.x = x;
+    this.y = y;
+    this.targetX = targetX;
+    this.targetY = targetY;
+    this.damage = damage;
+    this.radius = radius;
+    this.speed = speed;
+    this.dead = false;
+    this.exploding = false;
+    this.explosionTimer = 0;
+    this.explodeX = targetX;
+    this.explodeY = targetY;
+  }
+
+  update(dt) {
+    if (this.dead) return;
+    if (this.exploding) {
+      this.explosionTimer -= dt;
+      if (this.explosionTimer <= 0) {
+        this.dead = true;
+      }
+      return;
+    }
+
+    const dx = this.targetX - this.x;
+    const dy = this.targetY - this.y;
+    const dist = Math.hypot(dx, dy);
+    const step = this.speed * dt;
+    if (dist <= step + 1) {
+      this.x = this.targetX;
+      this.y = this.targetY;
+      this.explode();
+      return;
+    }
+    this.x += (dx / dist) * step;
+    this.y += (dy / dist) * step;
+  }
+
+  explode() {
+    this.exploding = true;
+    this.explosionTimer = 0.2;
+    this.explodeX = this.x;
+    this.explodeY = this.y;
+    for (const enemy of state.enemies) {
+      if (enemy.dead || enemy.reachedEnd) continue;
+      if (distance(enemy.x, enemy.y, this.explodeX, this.explodeY) <= this.radius) {
+        enemy.takeDamage(this.damage);
+      }
+    }
+  }
+
+  draw() {
+    if (this.exploding) {
+      ctx.fillStyle = 'rgba(121, 72, 36, 0.65)';
+      ctx.beginPath();
+      ctx.arc(this.explodeX, this.explodeY, this.radius * 0.8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(212, 102, 54, 0.8)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(this.explodeX, this.explodeY, this.radius * 0.5, 0, Math.PI * 2);
+      ctx.stroke();
+      return;
+    }
+    ctx.fillStyle = '#6a4028';
+    ctx.beginPath();
+    ctx.arc(this.x, this.y - 6, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#d8b39a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y - 6, 6, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
+
 function initGame() {
-  state.enemiesToSpawn = state.waveNumber * 5;
+  prepareWave(state.waveNumber);
+  setTowerSelection('cannon');
   canvas.addEventListener('click', handleCanvasClick);
   updateUI();
   requestAnimationFrame(loop);
@@ -210,12 +479,44 @@ function update(dt) {
   updateUI();
 }
 
+function prepareWave(waveNumber) {
+  const def = getWaveDefinition(waveNumber);
+  const list = [];
+  for (let i = 0; i < def.gingerbread; i++) list.push('gingerbread');
+  for (let i = 0; i < def.tanks; i++) list.push('tank');
+  for (let i = 0; i < def.darters; i++) list.push('darter');
+  state.pendingSpawns = shuffle(list);
+  state.spawnTimer = 2;
+}
+
+function getWaveDefinition(waveNumber) {
+  if (waveNumber === 1) return { gingerbread: 6, tanks: 0, darters: 0 };
+  if (waveNumber === 2) return { gingerbread: 9, tanks: 0, darters: 0 };
+  if (waveNumber === 3) return { gingerbread: 10, tanks: 0, darters: 5 };
+  if (waveNumber === 4) return { gingerbread: 10, tanks: 1, darters: 6 };
+  const extra = waveNumber - 4;
+  return {
+    gingerbread: 12 + extra * 2,
+    tanks: 2 + Math.min(3, extra),
+    darters: 6 + extra * 3
+  };
+}
+
+function shuffle(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
 function spawnEnemies(dt) {
-  if (state.enemiesToSpawn > 0) {
+  if (state.pendingSpawns.length > 0) {
     state.spawnTimer -= dt;
     if (state.spawnTimer <= 0) {
-      state.enemies.push(new Enemy());
-      state.enemiesToSpawn -= 1;
+      const type = state.pendingSpawns.shift();
+      state.enemies.push(new Enemy(type));
       state.spawnTimer = state.spawnInterval;
     }
   } else if (state.enemies.length === 0 && !state.gameOver) {
@@ -225,8 +526,7 @@ function spawnEnemies(dt) {
     } else {
       state.waveNumber += 1;
       state.cookies += 30;
-      state.enemiesToSpawn = state.waveNumber * 5;
-      state.spawnTimer = 2;
+      prepareWave(state.waveNumber);
     }
   }
 }
@@ -261,16 +561,23 @@ function handleCanvasClick(event) {
   const tileY = Math.floor(pos.y / tileSize);
   const centerX = tileX * tileSize + tileSize / 2;
   const centerY = tileY * tileSize + tileSize / 2;
+  const cost = towerCosts[currentTowerType] || 50;
 
   if (!isInsideCanvas(centerX, centerY)) return;
   if (isPointOnPath(centerX, centerY)) return;
-  if (state.cookies < 50) return;
+  if (state.cookies < cost) return;
   if (state.towers.some((t) => Math.abs(t.x - centerX) < tileSize / 2 && Math.abs(t.y - centerY) < tileSize / 2)) {
     return;
   }
 
-  state.towers.push(new Tower(centerX, centerY));
-  state.cookies -= 50;
+  if (currentTowerType === 'peppermint') {
+    state.towers.push(new PeppermintTower(centerX, centerY));
+  } else if (currentTowerType === 'mortar') {
+    state.towers.push(new CocoaMortar(centerX, centerY));
+  } else {
+    state.towers.push(new Tower(centerX, centerY));
+  }
+  state.cookies -= cost;
 }
 
 function isInsideCanvas(x, y) {
@@ -309,6 +616,19 @@ function pointToSegmentDistance(px, py, x1, y1, x2, y2) {
 
 function distance(x1, y1, x2, y2) {
   return Math.hypot(x2 - x1, y2 - y1);
+}
+
+function drawSprite(index, x, y, targetHeight) {
+  if (!spriteReady || spriteW === 0 || spriteH === 0) return false;
+  const col = index % 3;
+  const row = Math.floor(index / 3);
+  const sx = col * spriteW;
+  const sy = row * spriteH;
+  const scale = targetHeight / spriteH;
+  const dw = spriteW * scale;
+  const dh = spriteH * scale;
+  ctx.drawImage(spriteSheet, sx, sy, spriteW, spriteH, x - dw / 2, y - dh / 2, dw, dh);
+  return true;
 }
 
 function draw() {
@@ -397,7 +717,7 @@ function drawEndText() {
 function updateUI() {
   statsEl.textContent = `Cookies: ${state.cookies} | Lives: ${state.lives} | Wave: ${state.waveNumber}`;
   instructionsEl.textContent =
-    'Click on the snow (not on the path) to place Candy Cane Cannons (50 cookies each). Stop the gingerbread goons from reaching Santa’s Workshop!';
+    'Choose a tower, then click on snow (not on the path). Cannons: 50 (damage) | Slowbeam: 60 (slow) | Cocoa Mortar: 80 (splash).';
 }
 
 initGame();

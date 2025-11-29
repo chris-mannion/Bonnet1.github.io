@@ -11,7 +11,13 @@
     <h1>Gingerbread Gauntlet</h1>
     <div id="ui-panel">
       <div id="stats">Cookies: 0 | Lives: 0 | Wave: 0</div>
-      <div id="instructions">Click on the snow (not on the path) to place Candy Cane Cannons (50 cookies each). Stop the gingerbread goons from reaching Santa’s Workshop!</div>
+      <div id="instructions">Choose a tower, then click on the snow (not on the path) to place it. Stop the gingerbread goons from reaching Santa’s Workshop!</div>
+      <div id="tower-legend">Towers: Candy Cane Cannon = damage | Peppermint Slowbeam = slows | Hot Cocoa Mortar = splash damage.</div>
+      <div id="tower-buttons">
+        <button id="cannon-button" class="tower-button active">Candy Cane Cannon (50 cookies)</button>
+        <button id="peppermint-button" class="tower-button">Peppermint Slowbeam (60 cookies)</button>
+        <button id="mortar-button" class="tower-button">Hot Cocoa Mortar (80 cookies)</button>
+      </div>
     </div>
     <canvas id="game" width="800" height="600"></canvas>
   </main>
