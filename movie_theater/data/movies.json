@@ -1,0 +1,269 @@
+[
+  {
+    "title": "Bluey: The Sign",
+    "year": 2024,
+    "rating": "G",
+    "streaming": "Disney+"
+  },
+  {
+    "title": "The Lego Movie",
+    "year": 2014,
+    "rating": "PG",
+    "streaming": "Max",
+    "runtime": "1h 40m",
+    "score": 7.4,
+    "poster": "https://image.tmdb.org/t/p/w500/lbctonEnewCYZ4FYoTZhs8cidAl.jpg"
+  },
+  {
+    "title": "Encanto",
+    "year": 2021,
+    "rating": "PG",
+    "streaming": "Disney+",
+    "runtime": "1h 42m",
+    "score": 7.6,
+    "poster": "https://image.tmdb.org/t/p/w500/4j0PNHkMr5ax3IA8tjtxcmPU3QT.jpg"
+  },
+  {
+    "title": "Finding Nemo",
+    "year": 2003,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 40m",
+    "score": 7.8,
+    "poster": "https://image.tmdb.org/t/p/w500/eHuGQ10FUzK1mdOY69wF5pGgEf5.jpg"
+  },
+  {
+    "title": "The Peanuts Movie",
+    "year": 2015,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 28m",
+    "score": 6.9,
+    "poster": "https://image.tmdb.org/t/p/w500/aiwdwnl7RFs1vcBanOKr13ye3wE.jpg"
+  },
+  {
+    "title": "Paddington",
+    "year": 2014,
+    "rating": "PG",
+    "streaming": "Hulu",
+    "runtime": "1h 35m",
+    "score": 7.1,
+    "poster": "https://image.tmdb.org/t/p/w500/wpchRGhRhvhtU083PfX2yixXtiw.jpg"
+  },
+  {
+    "title": "Paddington 2",
+    "year": 2017,
+    "rating": "PG",
+    "streaming": "Max",
+    "runtime": "1h 44m",
+    "score": 7.5,
+    "poster": "https://image.tmdb.org/t/p/w500/1OJ9vkD5xPt3skC6KguyXAgagRZ.jpg"
+  },
+  {
+    "title": "Moana",
+    "year": 2016,
+    "rating": "PG",
+    "streaming": "Disney+",
+    "runtime": "1h 47m",
+    "score": 7.6,
+    "poster": "https://image.tmdb.org/t/p/w500/9tzN8sPbyod2dsa0lwuvrwBDWra.jpg"
+  },
+  {
+    "title": "Toy Story",
+    "year": 1995,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 21m",
+    "score": 8,
+    "poster": "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg"
+  },
+  {
+    "title": "Toy Story 2",
+    "year": 1999,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 32m",
+    "score": 7.6,
+    "poster": "https://image.tmdb.org/t/p/w500/4rbcp3ng8n1MKHjpeqW0L7Fnpzz.jpg"
+  },
+  {
+    "title": "Toy Story 3",
+    "year": 2010,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 42m",
+    "score": 7.8,
+    "poster": "https://image.tmdb.org/t/p/w500/AbbXspMOwdvwWZgVN0nabZq03Ec.jpg"
+  },
+  {
+    "title": "Toy Story 4",
+    "year": 2019,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 40m",
+    "score": 7.5,
+    "poster": "https://image.tmdb.org/t/p/w500/w9kR8qbmQ01HwnvK4alvnQ2ca0L.jpg"
+  },
+  {
+    "title": "Cars",
+    "year": 2006,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 57m",
+    "score": 7,
+    "poster": "https://image.tmdb.org/t/p/w500/2Touk3m5gzsqr1VsvxypdyHY5ci.jpg"
+  },
+  {
+    "title": "Cars 2",
+    "year": 2011,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 46m",
+    "score": 6.2,
+    "poster": "https://image.tmdb.org/t/p/w500/okIz1HyxeVOMzYwwHUjH2pHi74I.jpg"
+  },
+  {
+    "title": "Cars 3",
+    "year": 2017,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 42m",
+    "score": 6.9,
+    "poster": "https://image.tmdb.org/t/p/w500/fyy1nDC8wm553FCiBDojkJmKLCs.jpg"
+  },
+  {
+    "title": "The Mitchells vs. the Machines",
+    "year": 2021,
+    "rating": "PG",
+    "streaming": "Netflix",
+    "runtime": "1h 50m",
+    "score": 7.9,
+    "poster": "https://image.tmdb.org/t/p/w500/mI2Di7HmskQQ34kz0iau6J1vr70.jpg"
+  },
+  {
+    "title": "Sing",
+    "year": 2016,
+    "rating": "PG",
+    "streaming": "Peacock",
+    "runtime": "1h 48m",
+    "score": 7.1,
+    "poster": "https://image.tmdb.org/t/p/w500/lW0kUtXTOVlHTVhDO2VzNBACAHX.jpg"
+  },
+  {
+    "title": "Sing 2",
+    "year": 2021,
+    "rating": "PG",
+    "streaming": "Peacock",
+    "runtime": "1h 50m",
+    "score": 7.8,
+    "poster": "https://image.tmdb.org/t/p/w500/aWeKITRFbbwY8txG5uCj4rMCfSP.jpg"
+  },
+  {
+    "title": "Klaus",
+    "year": 2019,
+    "rating": "PG",
+    "streaming": "Netflix",
+    "runtime": "1h 37m",
+    "score": 8.2,
+    "poster": "https://image.tmdb.org/t/p/w500/q125RHUDgR4gjwh1QkfYuJLYkL.jpg"
+  },
+  {
+    "title": "A Bug's Life",
+    "year": 1998,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 35m",
+    "score": 7,
+    "poster": "https://image.tmdb.org/t/p/w500/Ah3J9OJVc2CNCuH2zMydXy9fmIC.jpg"
+  },
+  {
+    "title": "Ratatouille",
+    "year": 2007,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 51m",
+    "score": 7.8,
+    "poster": "https://image.tmdb.org/t/p/w500/t3vaWRPSf6WjDSamIkKDs1iQWna.jpg"
+  },
+  {
+    "title": "The Incredibles",
+    "year": 2004,
+    "rating": "PG",
+    "streaming": "Disney+",
+    "runtime": "1h 55m",
+    "score": 7.7,
+    "poster": "https://image.tmdb.org/t/p/w500/2LqaLgk4Z226KkgPJuiOQ58wvrm.jpg"
+  },
+  {
+    "title": "Turning Red",
+    "year": 2022,
+    "rating": "PG",
+    "streaming": "Disney+",
+    "runtime": "1h 40m",
+    "score": 7.3,
+    "poster": "https://image.tmdb.org/t/p/w500/qsdjk9oAKSQMWs0Vt5Pyfh6O4GZ.jpg"
+  },
+  {
+    "title": "Frozen",
+    "year": 2013,
+    "rating": "PG",
+    "streaming": "Disney+",
+    "runtime": "1h 42m",
+    "score": 7.2,
+    "poster": "https://image.tmdb.org/t/p/w500/itAKcobTYGpYT8Phwjd8c9hleTo.jpg"
+  },
+  {
+    "title": "Frozen II",
+    "year": 2019,
+    "rating": "PG",
+    "streaming": "Disney+",
+    "runtime": "1h 43m",
+    "score": 7.2,
+    "poster": "https://image.tmdb.org/t/p/w500/mINJaa34MtknCYl5AjtNJzWj8cD.jpg"
+  },
+  {
+    "title": "The Super Mario Bros. Movie",
+    "year": 2023,
+    "rating": "PG",
+    "streaming": "Peacock",
+    "runtime": "1h 33m",
+    "score": 7.6,
+    "poster": "https://image.tmdb.org/t/p/w500/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg"
+  },
+  {
+    "title": "Spider-Man: Into the Spider-Verse",
+    "year": 2018,
+    "rating": "PG",
+    "streaming": "Netflix",
+    "runtime": "1h 57m",
+    "score": 8.4,
+    "poster": "https://image.tmdb.org/t/p/w500/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg"
+  },
+  {
+    "title": "Puss in Boots: The Last Wish",
+    "year": 2022,
+    "rating": "PG",
+    "streaming": "Peacock",
+    "runtime": "1h 43m",
+    "score": 8.2,
+    "poster": "https://image.tmdb.org/t/p/w500/kuf6dutpsT0vSVehic3EZIqkOBt.jpg"
+  },
+  {
+    "title": "The Many Adventures of Winnie the Pooh",
+    "year": 1977,
+    "rating": "G",
+    "streaming": "Disney+",
+    "runtime": "1h 14m",
+    "score": 7.2,
+    "poster": "https://image.tmdb.org/t/p/w500/2xwaFVLv5geVrFd81eUttv7OutF.jpg"
+  },
+  {
+    "title": "The Secret Life of Pets",
+    "year": 2016,
+    "rating": "PG",
+    "streaming": "Peacock",
+    "runtime": "1h 26m",
+    "score": 6.3,
+    "poster": "https://image.tmdb.org/t/p/w500/bc3rCMgP4bbxNqGQCRlpJyU8otF.jpg"
+  }
+]

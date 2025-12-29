@@ -5,9 +5,65 @@ const instructionsEl = document.getElementById('instructions');
 const cannonButton = document.getElementById('cannon-button');
 const peppermintButton = document.getElementById('peppermint-button');
 const mortarButton = document.getElementById('mortar-button');
+const levelCompleteEl = document.getElementById('level-complete');
+const nextLevelButton = document.getElementById('next-level-button');
 
-const tileSize = 40;
-const pathWidth = 80;
+// Using a larger, Bloons-style grid to keep sprites visible.
+const tileSize = 48;
+const pathWidth = 96;
+const levels = [
+  {
+    pathPoints: [
+      { x: 0, y: 300 },
+      { x: 140, y: 300 },
+      { x: 200, y: 200 },
+      { x: 340, y: 200 },
+      { x: 430, y: 340 },
+      { x: 580, y: 340 },
+      { x: 660, y: 240 },
+      { x: 800, y: 240 }
+    ],
+    spawnInterval: 1.5,
+    maxWaves: 5,
+    difficulty: 1,
+    darterWaveBonus: 0,
+    extraTankWave: 5
+  },
+  {
+    pathPoints: [
+      { x: 0, y: 120 },
+      { x: 200, y: 120 },
+      { x: 200, y: 320 },
+      { x: 420, y: 320 },
+      { x: 420, y: 520 },
+      { x: 650, y: 520 },
+      { x: 650, y: 260 },
+      { x: 800, y: 260 }
+    ],
+    spawnInterval: 1.3,
+    maxWaves: 5,
+    difficulty: 1.25,
+    darterWaveBonus: 2,
+    extraTankWave: 4
+  },
+  {
+    pathPoints: [
+      { x: 0, y: 520 },
+      { x: 160, y: 520 },
+      { x: 160, y: 200 },
+      { x: 360, y: 200 },
+      { x: 360, y: 440 },
+      { x: 560, y: 440 },
+      { x: 560, y: 140 },
+      { x: 800, y: 140 }
+    ],
+    spawnInterval: 1.1,
+    maxWaves: 5,
+    difficulty: 1.5,
+    darterWaveBonus: 4,
+    extraTankWave: 3
+  }
+];
 const towerCosts = {
   cannon: 50,
   peppermint: 60,
@@ -26,20 +82,12 @@ spriteSheet.onload = () => {
 };
 
 const state = {
-  pathPoints: [
-    { x: 0, y: 300 },
-    { x: 140, y: 300 },
-    { x: 200, y: 200 },
-    { x: 340, y: 200 },
-    { x: 430, y: 340 },
-    { x: 580, y: 340 },
-    { x: 660, y: 240 },
-    { x: 800, y: 240 }
-  ],
+  currentLevelIndex: 0,
+  pathPoints: [],
   enemies: [],
   towers: [],
   bullets: [],
-  cookies: 100,
+  cookies: 80, // 20% tighter starting resources
   lives: 20,
   waveNumber: 1,
   pendingSpawns: [],
@@ -47,7 +95,10 @@ const state = {
   spawnInterval: 1.5,
   maxWaves: 5,
   gameOver: false,
-  win: false
+  win: false,
+  levelComplete: false,
+  blizzardCooldown: 0,
+  blizzardDuration: 3
 };
 
 function setTowerSelection(type) {
@@ -60,6 +111,12 @@ function setTowerSelection(type) {
 cannonButton.addEventListener('click', () => setTowerSelection('cannon'));
 peppermintButton.addEventListener('click', () => setTowerSelection('peppermint'));
 mortarButton.addEventListener('click', () => setTowerSelection('mortar'));
+nextLevelButton.addEventListener('click', () => advanceLevel());
+window.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() === 'b') {
+    triggerBlizzard();
+  }
+});
 
 class Enemy {
   constructor(type = 'gingerbread') {
@@ -76,7 +133,7 @@ class Enemy {
         : 45 + Math.random() * 15;
     this.speedMultiplier = 1;
     this.slowTimer = 0;
-    const baseHp = 10 + (state.waveNumber - 1) * 2;
+    const baseHp = (10 + (state.waveNumber - 1) * 2) * 1.2; // 20% tougher
     this.maxHp =
       type === 'tank'
         ? baseHp * 5
@@ -84,7 +141,7 @@ class Enemy {
         ? Math.max(4, Math.round(baseHp * 0.35))
         : baseHp;
     this.hp = this.maxHp;
-    this.reward = type === 'tank' ? 20 : type === 'darter' ? 3 : 5;
+    this.reward = type === 'tank' ? 16 : type === 'darter' ? 2 : 4; // 20% fewer cookies
     this.regenRate = type === 'tank' ? 1 : 0;
     this.reachedEnd = false;
     this.dead = false;
@@ -140,7 +197,7 @@ class Enemy {
   draw() {
     const bodySize = this.type === 'tank' ? 24 : this.type === 'darter' ? 12 : 16;
     const spriteIndex = this.type === 'tank' ? 1 : this.type === 'darter' ? 2 : 0;
-    const desiredH = this.type === 'tank' ? 44 : this.type === 'darter' ? 24 : 32;
+    const desiredH = (this.type === 'tank' ? 44 : this.type === 'darter' ? 24 : 32) * 1.2; // 20% larger sprites
     if (!drawSprite(spriteIndex, this.x, this.y, desiredH)) {
       if (this.type === 'tank') {
         ctx.fillStyle = '#f7fbff';
@@ -215,7 +272,7 @@ class Tower {
   }
 
   draw() {
-    if (drawSprite(3, this.x, this.y, 34)) return;
+    if (drawSprite(3, this.x, this.y, 34 * 1.2)) return;
     const size = 28;
     ctx.fillStyle = '#fff';
     ctx.fillRect(this.x - size / 2, this.y - size / 2, size, size);
@@ -262,7 +319,7 @@ class PeppermintTower {
   }
 
   draw() {
-    if (drawSprite(4, this.x, this.y, 34)) return;
+    if (drawSprite(4, this.x, this.y, 34 * 1.2)) return;
     const width = 14;
     const height = 36;
     ctx.fillStyle = '#f8fffb';
@@ -318,7 +375,7 @@ class CocoaMortar {
   }
 
   draw() {
-    if (drawSprite(5, this.x, this.y, 34)) return;
+    if (drawSprite(5, this.x, this.y, 34 * 1.2)) return;
     const width = 26;
     const height = 18;
     ctx.fillStyle = '#5b3524';
@@ -452,9 +509,10 @@ class CocoaShot {
 }
 
 function initGame() {
-  prepareWave(state.waveNumber);
+  loadLevel(0);
   setTowerSelection('cannon');
   canvas.addEventListener('click', handleCanvasClick);
+  hideLevelComplete();
   updateUI();
   requestAnimationFrame(loop);
 }
@@ -469,14 +527,36 @@ function loop(timestamp) {
 }
 
 function update(dt) {
-  if (!state.gameOver) {
+  if (!state.gameOver && !state.levelComplete) {
     spawnEnemies(dt);
     updateEnemies(dt);
     updateTowers(dt);
     updateBullets(dt);
     cleanup();
   }
+  if (state.blizzardCooldown > 0) {
+    state.blizzardCooldown = Math.max(0, state.blizzardCooldown - dt);
+  }
   updateUI();
+}
+
+function loadLevel(levelIndex) {
+  const level = levels[levelIndex] || levels[levels.length - 1];
+  state.currentLevelIndex = levelIndex;
+  state.pathPoints = clonePoints(level.pathPoints);
+  state.maxWaves = level.maxWaves;
+  state.spawnInterval = level.spawnInterval;
+  state.enemies = [];
+  state.towers = [];
+  state.bullets = [];
+  state.pendingSpawns = [];
+  state.waveNumber = 1;
+  state.spawnTimer = 2;
+  state.gameOver = false;
+  state.win = false;
+  state.levelComplete = false;
+  hideLevelComplete();
+  prepareWave(state.waveNumber);
 }
 
 function prepareWave(waveNumber) {
@@ -490,16 +570,32 @@ function prepareWave(waveNumber) {
 }
 
 function getWaveDefinition(waveNumber) {
-  if (waveNumber === 1) return { gingerbread: 6, tanks: 0, darters: 0 };
-  if (waveNumber === 2) return { gingerbread: 9, tanks: 0, darters: 0 };
-  if (waveNumber === 3) return { gingerbread: 10, tanks: 0, darters: 5 };
-  if (waveNumber === 4) return { gingerbread: 10, tanks: 1, darters: 6 };
-  const extra = waveNumber - 4;
-  return {
-    gingerbread: 12 + extra * 2,
-    tanks: 2 + Math.min(3, extra),
-    darters: 6 + extra * 3
-  };
+  const level = levels[state.currentLevelIndex];
+  let def;
+  if (waveNumber === 1) def = { gingerbread: 6, tanks: 0, darters: 0 };
+  else if (waveNumber === 2) def = { gingerbread: 9, tanks: 0, darters: 0 };
+  else if (waveNumber === 3) def = { gingerbread: 10, tanks: 0, darters: 5 };
+  else if (waveNumber === 4) def = { gingerbread: 10, tanks: 1, darters: 6 };
+  else {
+    const extra = waveNumber - 4;
+    def = {
+      gingerbread: 12 + extra * 2,
+      tanks: 2 + Math.min(3, extra),
+      darters: 6 + extra * 3
+    };
+  }
+
+  // Scale difficulty per level
+  def.gingerbread = Math.round(def.gingerbread * level.difficulty);
+  def.darters = Math.round(def.darters * level.difficulty);
+  def.tanks = Math.max(def.tanks, Math.round(def.tanks * level.difficulty));
+  if (waveNumber >= level.extraTankWave) {
+    def.tanks += 1;
+  }
+  if (waveNumber >= 3 && level.darterWaveBonus > 0) {
+    def.darters += level.darterWaveBonus;
+  }
+  return def;
 }
 
 function shuffle(arr) {
@@ -521,11 +617,17 @@ function spawnEnemies(dt) {
     }
   } else if (state.enemies.length === 0 && !state.gameOver) {
     if (state.waveNumber >= state.maxWaves) {
-      state.gameOver = true;
-      state.win = true;
+      if (state.currentLevelIndex >= levels.length - 1) {
+        state.gameOver = true;
+        state.win = true;
+      } else {
+        state.cookies += 64;
+        state.levelComplete = true;
+        showLevelComplete();
+      }
     } else {
       state.waveNumber += 1;
-      state.cookies += 30;
+      state.cookies += 24;
       prepareWave(state.waveNumber);
     }
   }
@@ -555,7 +657,7 @@ function cleanup() {
 }
 
 function handleCanvasClick(event) {
-  if (state.gameOver) return;
+  if (state.gameOver || state.levelComplete) return;
   const pos = getCanvasPos(event);
   const tileX = Math.floor(pos.x / tileSize);
   const tileY = Math.floor(pos.y / tileSize);
@@ -616,6 +718,10 @@ function pointToSegmentDistance(px, py, x1, y1, x2, y2) {
 
 function distance(x1, y1, x2, y2) {
   return Math.hypot(x2 - x1, y2 - y1);
+}
+
+function clonePoints(points) {
+  return points.map((p) => ({ x: p.x, y: p.y }));
 }
 
 function drawSprite(index, x, y, targetHeight) {
@@ -715,9 +821,33 @@ function drawEndText() {
 }
 
 function updateUI() {
-  statsEl.textContent = `Cookies: ${state.cookies} | Lives: ${state.lives} | Wave: ${state.waveNumber}`;
+  const blizzardText = state.blizzardCooldown <= 0 ? 'Ready' : `${state.blizzardCooldown.toFixed(1)}s`;
+  statsEl.textContent = `Cookies: ${state.cookies} | Lives: ${state.lives} | Level: ${state.currentLevelIndex + 1}/${levels.length} | Wave: ${state.waveNumber}/${state.maxWaves} | Blizzard: ${blizzardText}`;
   instructionsEl.textContent =
-    'Choose a tower, then click on snow (not on the path). Cannons: 50 (damage) | Slowbeam: 60 (slow) | Cocoa Mortar: 80 (splash).';
+    'Choose a tower, then click on snow (not on the path). Cannons: 50 (damage) | Slowbeam: 60 (slow) | Cocoa Mortar: 80 (splash). Press B for Blizzard slow (cooldown). Clear all 3 levels with changing paths.';
+}
+
+function showLevelComplete() {
+  levelCompleteEl.classList.remove('hidden');
+}
+
+function hideLevelComplete() {
+  levelCompleteEl.classList.add('hidden');
+}
+
+function advanceLevel() {
+  hideLevelComplete();
+  loadLevel(state.currentLevelIndex + 1);
+}
+
+function triggerBlizzard() {
+  if (state.blizzardCooldown > 0 || state.gameOver || state.levelComplete) return;
+  for (const enemy of state.enemies) {
+    if (enemy.dead || enemy.reachedEnd) continue;
+    enemy.speedMultiplier = Math.min(enemy.speedMultiplier, 0.4);
+    enemy.slowTimer = Math.max(enemy.slowTimer, state.blizzardDuration);
+  }
+  state.blizzardCooldown = 10;
 }
 
 initGame();

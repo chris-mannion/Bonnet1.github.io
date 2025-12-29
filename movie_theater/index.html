@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mannion Cinemas International</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Sora:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <div class="logo">
+          <div class="logo__oval" aria-hidden="true">
+            <span class="logo__letters">mci</span>
+          </div>
+          <div class="logo__text">
+            <h1 class="logo__name">Mannion Cinemas</h1>
+            <span class="logo__intl">International</span>
+          </div>
+          <span class="logo__badge">Proxy Plex</span>
+        </div>
+        <p class="hero__tagline">
+          Tap a button to light up the MCI screens with kid-friendly streaming
+          picks, poster art, and average ratings.
+        </p>
+      </header>
+
+      <section class="controls" aria-label="Movie option controls">
+        <button class="btn" data-count="3">Spin up 3 theaters</button>
+        <button class="btn" data-count="5">Spin up 5 theaters</button>
+        <button class="btn" data-count="10">Spin up 10 theaters</button>
+      </section>
+
+      <section class="results" aria-live="polite">
+        <div class="results__intro">
+          <h2>MCI Playbill</h2>
+          <p>Pick a button to see randomized movie options with poster art.</p>
+        </div>
+        <div class="results__grid" id="movie-grid"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

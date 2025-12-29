@@ -23,6 +23,7 @@ body {
   background: #1d4c2b;
   border: 2px solid #a4c2a0;
   box-shadow: 0 0 0 4px #0b2411;
+  position: relative;
 }
 
 h1 {
@@ -87,4 +88,42 @@ canvas {
   background: #b8d7c0;
   image-rendering: pixelated;
   box-shadow: 0 0 0 3px #0b2411, 0 0 20px rgba(0, 0, 0, 0.35);
+}
+
+#level-complete {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+#level-complete.hidden {
+  display: none;
+}
+
+#level-complete .modal {
+  background: #f7fff3;
+  color: #0b2411;
+  border: 3px solid #d24b4b;
+  box-shadow: 0 0 0 3px #5a0f0f, 0 6px 0 #0b2411;
+  padding: 16px 24px;
+  text-align: center;
+  font-family: "Courier New", monospace;
+}
+
+#level-complete h2 {
+  margin: 0 0 8px;
+  color: #b02222;
+}
+
+#level-complete button {
+  margin-top: 8px;
+  font-family: "Courier New", monospace;
+  padding: 8px 14px;
+  border: 2px solid #a3c1a0;
+  background: #cde8d3;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #0b2411;
 }

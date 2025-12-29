@@ -1,0 +1,340 @@
+:root {
+  --uci-yellow: #f7e500;
+  --uci-yellow-soft: #fff2a6;
+  --uci-navy: #0b2440;
+  --uci-navy-dark: #071729;
+  --cinema-black: #06080f;
+  --cinema-blue: #101828;
+  --cinema-red: #9f1f2c;
+  --ink-light: #e8edf5;
+  --surface: #ffffff;
+  --shadow: rgba(5, 10, 20, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Sora", sans-serif;
+  color: var(--ink-light);
+  background: radial-gradient(circle at top, #1a2538 0%, #0a0f1a 45%, #06080f 100%);
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  position: relative;
+}
+
+.page::before,
+.page::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  z-index: -1;
+  opacity: 0.65;
+}
+
+.page::before {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(247, 229, 0, 0.35) 0%, transparent 70%);
+  top: -120px;
+  right: -120px;
+}
+
+.page::after {
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  bottom: 40px;
+  left: -120px;
+}
+
+.hero {
+  background: linear-gradient(120deg, #fff7c4 0%, var(--uci-yellow) 65%, #f5d400 100%);
+  border-radius: 32px;
+  padding: 36px 40px;
+  box-shadow: 0 18px 36px var(--shadow);
+  border: 4px solid var(--uci-navy);
+  display: grid;
+  gap: 18px;
+  color: var(--uci-navy);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 36px;
+  border: 2px dashed rgba(11, 36, 64, 0.25);
+  pointer-events: none;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.logo__oval {
+  width: clamp(180px, 24vw, 220px);
+  height: clamp(110px, 14vw, 132px);
+  background: var(--uci-yellow);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 6px solid var(--uci-navy);
+  box-shadow: 0 12px 20px rgba(7, 15, 30, 0.25);
+}
+
+.logo__letters {
+  font-family: "Baloo 2", sans-serif;
+  font-size: clamp(2.8rem, 6vw, 4.2rem);
+  font-weight: 700;
+  color: var(--uci-navy);
+  letter-spacing: -0.08em;
+  text-transform: lowercase;
+}
+
+.logo__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.logo__name {
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  margin: 0;
+}
+
+.logo__intl {
+  color: rgba(11, 36, 64, 0.7);
+}
+
+.logo__badge {
+  background: var(--uci-navy);
+  color: var(--uci-yellow);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.hero__tagline {
+  max-width: 640px;
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.controls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 32px 0 40px;
+}
+
+.btn {
+  border: 2px solid var(--uci-yellow);
+  padding: 14px 22px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--uci-navy), var(--uci-navy-dark));
+  color: var(--uci-yellow);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 12px 20px rgba(5, 10, 20, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 16px 26px rgba(5, 10, 20, 0.45);
+  background: linear-gradient(135deg, #0c2d52, #051223);
+}
+
+.results {
+  background: var(--cinema-blue);
+  border-radius: 32px;
+  padding: 32px;
+  box-shadow: 0 18px 36px var(--shadow);
+  border: 2px solid rgba(247, 229, 0, 0.2);
+}
+
+.results__intro h2 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  color: #fff8c9;
+}
+
+.results__intro p {
+  margin: 0 0 24px;
+  color: rgba(232, 237, 245, 0.7);
+}
+
+.results__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+}
+
+.card {
+  background: #0c1324;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(247, 229, 0, 0.2);
+  box-shadow: 0 18px 30px rgba(5, 10, 20, 0.45);
+  animation: posterIn 0.45s ease forwards;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.card__poster-wrap {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: linear-gradient(140deg, #16223c, #0a0f1a);
+  min-height: 320px;
+}
+
+.card__poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card__poster-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.65) 100%);
+}
+
+.card__poster-top {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card__label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  padding: 6px 10px;
+  background: rgba(6, 8, 15, 0.6);
+  border-radius: 999px;
+}
+
+.card__rating {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--uci-yellow);
+  color: var(--uci-navy);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.card__score {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: var(--uci-yellow);
+  color: var(--uci-navy);
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  box-shadow: 0 8px 16px rgba(7, 15, 30, 0.3);
+}
+
+.card__details {
+  padding: 16px;
+  display: grid;
+  gap: 8px;
+  background: #0f172a;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-family: "Baloo 2", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #f5f6ff;
+}
+
+.card__meta {
+  font-size: 0.9rem;
+  margin: 0;
+  color: rgba(232, 237, 245, 0.7);
+}
+
+.card__stream {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--uci-navy);
+  background: var(--uci-yellow);
+  padding: 6px 12px;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+@keyframes posterIn {
+  from {
+    transform: translateY(12px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 32px 18px 64px;
+  }
+
+  .hero {
+    padding: 28px 22px;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .logo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

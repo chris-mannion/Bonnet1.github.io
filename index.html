@@ -6,15 +6,18 @@
   <title>Bonnet | Indie Game Experiments</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0f1f2e;
-      --bg-glow: #123f5e;
+      --bg: #0c1624;
+      --bg-glow: #1a2b41;
       --accent: #f2be5c;
+      --accent-2: #ff7a59;
+      --accent-3: #6ad1ff;
       --muted: #9cb7c8;
-      --panel: rgba(13, 25, 38, 0.72);
-      --card: rgba(255, 255, 255, 0.04);
+      --panel: rgba(10, 18, 28, 0.82);
+      --card: rgba(255, 255, 255, 0.05);
+      --line: rgba(255, 255, 255, 0.08);
     }
 
     * {
@@ -25,10 +28,10 @@
       margin: 0;
       min-height: 100vh;
       background: radial-gradient(circle at 20% 20%, rgba(242, 190, 92, 0.18), transparent 32%),
-                  radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.08), transparent 36%),
-                  linear-gradient(135deg, var(--bg) 0%, var(--bg-glow) 50%, #0b1825 100%);
+                  radial-gradient(circle at 75% 10%, rgba(106, 209, 255, 0.12), transparent 36%),
+                  linear-gradient(135deg, var(--bg) 0%, var(--bg-glow) 50%, #0a1320 100%);
       color: #e5eef5;
-      font-family: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+      font-family: "Space Grotesk", sans-serif;
       padding: 32px 18px 48px;
       display: flex;
       justify-content: center;
@@ -38,10 +41,34 @@
       width: min(1080px, 100%);
       background: var(--panel);
       border: 1px solid rgba(242, 190, 92, 0.18);
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 32px;
       backdrop-filter: blur(10px);
       box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    main::before {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(242, 190, 92, 0.25), transparent 70%);
+      top: -120px;
+      right: -120px;
+      pointer-events: none;
+    }
+
+    main::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.12;
+      pointer-events: none;
     }
 
     header {
@@ -51,6 +78,8 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
     }
 
     .logo {
@@ -62,15 +91,15 @@
     }
 
     .logo-mark {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, rgba(242, 190, 92, 0.6), rgba(242, 190, 92, 0.2));
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(242, 190, 92, 0.7), rgba(255, 122, 89, 0.5));
       display: grid;
       place-items: center;
       color: #0f1f2e;
       font-weight: 700;
-      box-shadow: 0 8px 26px rgba(242, 190, 92, 0.25);
+      box-shadow: 0 10px 30px rgba(242, 190, 92, 0.3);
     }
 
     .pill {
@@ -78,14 +107,23 @@
       background: rgba(255, 255, 255, 0.06);
       border-radius: 999px;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 13px;
       border: 1px solid rgba(255, 255, 255, 0.07);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .pill--outline {
+      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.25);
     }
 
     h1 {
-      font-size: clamp(28px, 4vw, 42px);
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(32px, 5vw, 46px);
       margin: 4px 0 10px;
-      letter-spacing: -0.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     p {
@@ -95,11 +133,133 @@
       max-width: 780px;
     }
 
+    .spotlight {
+      margin: 26px 0 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 20px;
+      padding: 22px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(242, 190, 92, 0.16), rgba(10, 18, 28, 0.8));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .spotlight::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 60%);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .spotlight__title {
+      margin: 8px 0 10px;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(26px, 3vw, 34px);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f8f5e2;
+    }
+
+    .spotlight__screen {
+      background: linear-gradient(160deg, #0f1a2b, #0a1320);
+      border-radius: 16px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 60px rgba(6, 10, 18, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spotlight__screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.6) 100%);
+    }
+
+    .screen__header {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      position: relative;
+      z-index: 1;
+    }
+
+    .screen__title {
+      margin: 12px 0 18px;
+      font-size: 18px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .screen__ticket {
+      display: grid;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: rgba(229, 238, 245, 0.8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .screen__seats {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .screen__seats span {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(242, 190, 92, 0.3);
+      box-shadow: 0 0 10px rgba(242, 190, 92, 0.2);
+    }
+
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.16em;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .label::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      opacity: 0.8;
+    }
+
+    .label--accent {
+      color: rgba(248, 245, 226, 0.8);
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
       margin-top: 24px;
+      position: relative;
+      z-index: 1;
     }
 
     .card {
@@ -109,6 +269,7 @@
       padding: 18px;
       position: relative;
       overflow: hidden;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
     }
 
     .card::after {
@@ -119,23 +280,10 @@
       background: radial-gradient(circle at 20% 20%, rgba(242, 190, 92, 0.08), transparent 40%);
     }
 
-    .label {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--muted);
-      letter-spacing: 0.2px;
-      margin-bottom: 6px;
-    }
-
-    .label::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      opacity: 0.8;
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(242, 190, 92, 0.25);
+      box-shadow: 0 18px 30px rgba(10, 18, 28, 0.35);
     }
 
     .card h2 {
@@ -178,6 +326,14 @@
       margin-top: 26px;
       color: var(--muted);
       font-size: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 840px) {
+      .spotlight {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 640px) {
@@ -197,6 +353,10 @@
         flex: 1;
         text-align: center;
       }
+
+      .screen__seats {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
     }
   </style>
 </head>
@@ -210,10 +370,35 @@
           <h1>Strange prototypes, cozy vibes.</h1>
         </div>
       </div>
-      <div class="pill">Made for the web</div>
+      <div class="pill pill--outline">Made for the web</div>
     </header>
 
-    <p>I tinker with small games, seasonal jams, and other cozy experiments. Everything here runs right in the browser—no installs, just vibes. Check out the latest build below.</p>
+    <p>I tinker with small games, seasonal jams, and other cozy experiments. Everything here runs right in the browser. Check out the latest builds and the new MCI movie experiment below.</p>
+
+    <section class="spotlight">
+      <div>
+        <div class="label label--accent">New experiment</div>
+        <h2 class="spotlight__title">Mannion Cinemas International</h2>
+        <p>Spin up a proxy movie theater that serves kid-friendly streaming picks with poster art and ratings, all curated locally before publishing.</p>
+        <div class="actions">
+          <a class="button" href="movie_theater/" target="_blank" rel="noopener noreferrer">Visit MCI</a>
+          <a class="secondary button" href="https://github.com/Bonnet1/Bonnet1.github.io/tree/main/movie_theater" target="_blank" rel="noopener noreferrer">Source</a>
+        </div>
+      </div>
+      <div class="spotlight__screen" aria-hidden="true">
+        <div class="screen__header">Now Showing</div>
+        <div class="screen__title">MCI Playbill</div>
+        <div class="screen__ticket">
+          <span>3 / 5 / 10 theaters</span>
+          <span>Kid-safe streaming picks</span>
+        </div>
+        <div class="screen__seats">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </section>
 
     <section class="grid">
       <article class="card">
